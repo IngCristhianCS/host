@@ -1,59 +1,76 @@
-# Prueba
+# Host Application - Pruebas
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.7.
+Este proyecto es la aplicación host dentro de una arquitectura de **microfrontends**, diseñada para integrar y coordinar múltiples aplicaciones remotas utilizando **Webpack Module Federation**. Proporciona una base sólida para la gestión y carga dinámica de microfrontends.
 
-## Development server
+## Tabla de Contenidos
 
-To start a local development server, run:
+- [Descripción General](#descripción-general)
+- [Características](#características)
+- [Servidor de Desarrollo](#servidor-de-desarrollo)
+- [Construcción](#construcción)
+- [Configuración de Webpack](#configuración-de-webpack)
+- [Microfrontends Integrados](#microfrontends-integrados)
+- [Tecnologías Usadas](#tecnologías-usadas)
+
+---
+
+## Descripción General
+
+La aplicación host **Pruebas** permite la integración dinámica de aplicaciones remotas (microfrontends) y gestiona la interacción entre ellas. Se ha desarrollado utilizando **Angular CLI 19.0.7** y **Webpack Module Federation** para una arquitectura modular y escalable.
+
+---
+
+## Características
+
+- **Integración Dinámica**: Carga y administra microfrontends en tiempo de ejecución.
+- **Arquitectura Modular**: Aislamiento entre microfrontends para facilitar el mantenimiento y la escalabilidad.
+- **Gestión Centralizada**: Coordina las dependencias compartidas entre el host y los remotos.
+- **Soporte para Angular Material**: Estilo y diseño responsivo para una interfaz moderna.
+- **Alertas Intuitivas**: Implementación de SweetAlert2 para notificaciones de usuario.
+
+---
+
+## Servidor de Desarrollo
+
+Para iniciar el servidor de desarrollo, ejecuta:
 
 ```bash
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abre tu navegador en [http://localhost:4200/](http://localhost:4200/). La aplicación se recargará automáticamente cuando realices cambios en los archivos fuente.
 
-## Code scaffolding
+## Construcción
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Para construir el proyecto, ejecuta:
 
 ```bash
 ng build
-```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Configuración de Webpack
 
-## Running unit tests
+El archivo `webpack.config.js` del host define los remotos integrados:
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+```javascript
+const { shareAll, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 
-```bash
-ng test
-```
+module.exports = withModuleFederationPlugin({
+  remotes: {
+    'empleado-mf': 'http://localhost:4201/remoteEntry.js', // Referencia al Micro Frontend
+  },
+  shared: {
+    ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
+  },
+});
 
-## Running end-to-end tests
+## Microfrontends Integrados
 
-For end-to-end (e2e) testing, run:
+- **empleado-mf**:
+  - **URL**: [http://localhost:4201/remoteEntry.js](http://localhost:4201/remoteEntry.js)
+  - **Funcionalidad**: Gestión de empleados, incluyendo creación, edición y eliminación.
 
-```bash
-ng e2e
-```
+## Tecnologías Usadas
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Angular CLI 19.0.7**: Framework para construir el microfrontend.
+- **Webpack Module Federation**: Para la arquitectura de microfrontends y carga dinámica.
+- **RxJS**: Programación reactiva para operaciones asíncronas.
+- **TypeScript**: Lenguaje de tipado estricto para mejorar el mantenimiento del código.
